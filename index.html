@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker Pro - Build Better Habits</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Auth Screen -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h1 class="logo">Habit Tracker Pro</h1>
+                    <p class="tagline">Build better habits, track your progress</p>
+                    
+                    <div id="login-form" class="auth-form active">
+                        <h2>Welcome back</h2>
+                        <input type="email" id="login-email" placeholder="Email" class="input">
+                        <input type="password" id="login-password" placeholder="Password" class="input">
+                        <button onclick="login()" class="btn btn-primary">Sign In</button>
+                        <p class="auth-switch">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+                    </div>
+                    
+                    <div id="signup-form" class="auth-form">
+                        <h2>Create account</h2>
+                        <input type="text" id="signup-name" placeholder="Full name" class="input">
+                        <input type="email" id="signup-email" placeholder="Email" class="input">
+                        <input type="password" id="signup-password" placeholder="Password" class="input">
+                        <button onclick="signup()" class="btn btn-primary">Sign Up</button>
+                        <p class="auth-switch">Already have an account? <a href="#" onclick="showLogin()">Sign in</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="main-screen" class="screen">
+            <!-- Header -->
+            <header class="header">
+                <div class="container">
+                    <div class="header-content">
+                        <h1 class="logo">Habit Tracker Pro</h1>
+                        <div class="header-actions">
+                            <button onclick="toggleTheme()" class="btn-icon" id="theme-toggle">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M10 3V1M10 19V17M17 10H19M1 10H3M15.657 4.343L17.071 2.929M2.929 17.071L4.343 15.657M15.657 15.657L17.071 17.071M2.929 2.929L4.343 4.343" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                            <button onclick="showProfile()" class="btn-icon">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <circle cx="10" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M3 18C3 14.134 6.134 11 10 11C13.866 11 17 14.134 17 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                            <button onclick="logout()" class="btn btn-secondary">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Navigation -->
+            <nav class="nav">
+                <div class="container">
+                    <div class="nav-tabs">
+                        <button onclick="showTab('dashboard')" class="nav-tab active" data-tab="dashboard">Dashboard</button>
+                        <button onclick="showTab('habits')" class="nav-tab" data-tab="habits">Habits</button>
+                        <button onclick="showTab('analytics')" class="nav-tab" data-tab="analytics">Analytics</button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="main">
+                <div class="container">
+                    <!-- Dashboard Tab -->
+                    <div id="dashboard-tab" class="tab-content active">
+                        <div class="dashboard-header">
+                            <div>
+                                <h2>Today's Progress</h2>
+                                <p class="date" id="current-date"></p>
+                            </div>
+                            <button onclick="showAddHabitModal()" class="btn btn-primary">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Add Habit
+                            </button>
+                        </div>
+
+                        <!-- Week Overview -->
+                        <div class="week-overview">
+                            <h3>Week Overview</h3>
+                            <div class="week-selector">
+                                <button onclick="changeWeek(-1)" class="btn-icon">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                                <span id="week-label">Week 1</span>
+                                <button onclick="changeWeek(1)" class="btn-icon">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="week-grid" id="week-grid"></div>
+                        </div>
+
+                        <!-- Overall Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">🎯</div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="total-habits">0</div>
+                                    <div class="stat-label">Active Habits</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🔥</div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="longest-streak">0</div>
+                                    <div class="stat-label">Longest Streak</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">✅</div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="completion-rate">0%</div>
+                                    <div class="stat-label">Completion Rate</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📊</div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="today-progress">0/0</div>
+                                    <div class="stat-label">Today's Progress</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Habits -->
+                        <div class="today-habits">
+                            <h3>Today's Habits</h3>
+                            <div id="today-habits-list" class="habits-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Habits Tab -->
+                    <div id="habits-tab" class="tab-content">
+                        <div class="habits-header">
+                            <h2>All Habits</h2>
+                            <button onclick="showAddHabitModal()" class="btn btn-primary">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Add Habit
+                            </button>
+                        </div>
+                        <div id="all-habits-list" class="habits-grid"></div>
+                    </div>
+
+                    <!-- Analytics Tab -->
+                    <div id="analytics-tab" class="tab-content">
+                        <div class="analytics-header">
+                            <h2>Analytics</h2>
+                            <div class="analytics-filters">
+                                <select id="analytics-period" onchange="updateAnalytics()" class="select">
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="year">This Year</option>
+                                </select>
+                                <select id="analytics-habit" onchange="updateAnalytics()" class="select">
+                                    <option value="all">All Habits</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="analytics-grid">
+                            <!-- Weekly Chart -->
+                            <div class="chart-card">
+                                <h3>Weekly Progress</h3>
+                                <canvas id="weekly-chart"></canvas>
+                            </div>
+
+                            <!-- Trend Chart -->
+                            <div class="chart-card">
+                                <h3>Progress Trend</h3>
+                                <canvas id="trend-chart"></canvas>
+                            </div>
+
+                            <!-- Monthly Comparison -->
+                            <div class="chart-card">
+                                <h3>Monthly Comparison</h3>
+                                <canvas id="monthly-chart"></canvas>
+                            </div>
+
+                            <!-- Habit Comparison -->
+                            <div class="chart-card">
+                                <h3>Habit Comparison</h3>
+                                <canvas id="habit-comparison-chart"></canvas>
+                            </div>
+
+                            <!-- Heatmap -->
+                            <div class="chart-card full-width">
+                                <h3>Activity Heatmap</h3>
+                                <div id="heatmap-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Add/Edit Habit Modal -->
+        <div id="habit-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Add New Habit</h3>
+                    <button onclick="closeHabitModal()" class="btn-icon">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit-habit-id">
+                    <label class="label">Habit Name</label>
+                    <input type="text" id="habit-name" placeholder="e.g., Morning Exercise" class="input">
+                    
+                    <label class="label">Description (optional)</label>
+                    <textarea id="habit-description" placeholder="Why is this habit important?" class="input" rows="3"></textarea>
+                    
+                    <label class="label">Color</label>
+                    <div class="color-picker">
+                        <button class="color-option" data-color="#6366f1" style="background: #6366f1"></button>
+                        <button class="color-option" data-color="#8b5cf6" style="background: #8b5cf6"></button>
+                        <button class="color-option" data-color="#ec4899" style="background: #ec4899"></button>
+                        <button class="color-option" data-color="#f43f5e" style="background: #f43f5e"></button>
+                        <button class="color-option" data-color="#f59e0b" style="background: #f59e0b"></button>
+                        <button class="color-option" data-color="#10b981" style="background: #10b981"></button>
+                        <button class="color-option" data-color="#06b6d4" style="background: #06b6d4"></button>
+                        <button class="color-option" data-color="#64748b" style="background: #64748b"></button>
+                    </div>
+                    <input type="hidden" id="habit-color" value="#6366f1">
+                </div>
+                <div class="modal-footer">
+                    <button onclick="closeHabitModal()" class="btn btn-secondary">Cancel</button>
+                    <button onclick="saveHabit()" class="btn btn-primary">Save Habit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
